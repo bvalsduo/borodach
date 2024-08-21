@@ -11,6 +11,7 @@ class Admin(StatesGroup):
     add_joke_cat = State()
     add_joke_text = State()
     chng_cat_level = State()
+    chng_cat_name = State()
     chng_cat = State()
     chng_joke_level = State()
     chng_joke = State()

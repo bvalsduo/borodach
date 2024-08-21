@@ -5,6 +5,7 @@ from aiogram.types import Message, CallbackQuery
 from loguru import logger as log
 from aiogram.filters import StateFilter, Command
 
+
 from data.jokes import usual_cat_jokes, vip_cat_jokes
 from data.config import admin_ids, vip_ids
 from filters.is_category import IsCategory
@@ -15,6 +16,7 @@ from keyboards.vip_user_keyboards import vip_cat_jokes_key, vip_cat_jokes_inds, 
 from keyboards.admin_keyboards import admin_actions, ad_vip_us_key, yn_key, options_key, contacts_key, dct_rename
 from states.FSM_reading import fsm_reading
 from states.FSM_admin_panel import Admin
+
 
 rout_admin = Router()
 rout_admin.message.filter(IsAdmin())
@@ -29,6 +31,10 @@ rout_admin.callback_query.filter(IsAdmin())
 
 
 # нужно сделать генератор reply клавиатуры с категориями анекдотов
+
+
+
+
 
 
 #########################################################################################
@@ -80,6 +86,7 @@ async def selection_action(callback: CallbackQuery, state: FSMContext):
             log.info(f'callback is handled, index - {ind + 1}')
 
 
+
 #########################################################################################
 #                            HANDLERS FOR CATEGORIES
 
@@ -102,13 +109,13 @@ async def add_cat_name(message: Message, state: FSMContext):
     cat_level = (await state.get_data())['cat_level']
     jokes_cat_dct = {'VIP': [vip_cat_jokes, vip_lst_cats, vip_cat_jokes_key],
                      'USUAL': [usual_cat_jokes, usual_lst_cats, usual_cat_jokes_key]}
-    jokes_cat_dct[cat_level][0][cat_name] = {1: 'Пустой анекдот'}  # add new category
-    jokes_cat_dct[cat_level][1].append(cat_name)  # add new category to cat_key
+    jokes_cat_dct[cat_level][0][cat_name] = {1: 'Пустой анекдот'}                    # add new category
+    jokes_cat_dct[cat_level][1].append(cat_name)                                     # add new category to cat_key
     await message.answer(f'Название категории:\n{cat_name}\n/back чтобы вернуться и поменять данные',
                          reply_markup=jokes_cat_dct[cat_level][2]().as_markup(resize_keyboard=True))
 
     await message.answer(f'что то еще?', reply_markup=admin_actions().as_markup(resize_keyboard=True,
-                                                                                input_field_placeholder='клавиатура обновлена'))
+                                                                                      input_field_placeholder='клавиатура обновлена'))
     await state.set_state(Admin.selection_state)
     log.info('add_cat_name is succes, set state selection_state')
 
@@ -120,8 +127,7 @@ async def change_cat_level(callback: CallbackQuery, state: FSMContext):
     jokes_cat_dct = {'VIP': vip_cat_jokes_key,
                      'USUAL': usual_cat_jokes_key}
     await callback.message.answer('Выберите категорию название которой хотите поменять',
-                                  reply_markup=jokes_cat_dct[(await state.get_data())['chng_cat_level']]().as_markup(
-                                      resize_keyboard=True))
+                                  reply_markup=jokes_cat_dct[(await state.get_data())['chng_cat_level']]().as_markup(resize_keyboard=True))
     await state.set_state(Admin.chng_cat_name)
     log.info('chng cat level succes, set chng cat state')
 
@@ -143,6 +149,7 @@ async def change_cat_name(message: Message, state: FSMContext):
     cat_dct = {'VIP': [vip_lst_cats, vip_cat_jokes, vip_cat_jokes_key],
                'USUAL': [usual_lst_cats, usual_cat_jokes, usual_cat_jokes_key]}
 
+    
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -179,7 +186,7 @@ async def del_cat_level(callback: CallbackQuery, state: FSMContext):
     await state.update_data(del_cat_level=user_dct[callback.data])
     await callback.message.answer('Выбери категорию для удаления',
                                   reply_markup=cat_dct[callback.data]().as_markup(resize_keyboard=True,
-                                                                                  input_field_placeholder='Выбери категорию'))
+                                                                                            input_field_placeholder='Выбери категорию'))
     await state.set_state(Admin.del_cat)
     log.info('delete_cat_level is succes, set del_cat')
 
@@ -196,9 +203,11 @@ async def del_cat(message: Message, state: FSMContext):
                          reply_markup=cat_dct[level][2]().as_markup(resize_keyboard=True,
                                                                     input_field_placeholder='Выбери категорию'))
     await message.answer(f'что то еще?', reply_markup=admin_actions().as_markup(resize_keyboard=True,
-                                                                                input_field_placeholder='клавиатура обновлена'))
+                                                                                      input_field_placeholder='клавиатура обновлена'))
     await state.set_state(Admin.selection_state)
     log.info(f'del_cat succes, set state selection state')
+
+
 
 
 #########################################################################################
@@ -213,9 +222,8 @@ async def add_joke_level(callback: CallbackQuery, state: FSMContext):
     await state.update_data(joke_level=user_dct[callback.data])
     await state.set_state(Admin.add_joke_cat)
     await callback.message.answer('Выбери категорию в которой будет новый анекдот',
-                                  reply_markup=cat_dct[(await state.get_data())['joke_level']]().as_markup(
-                                      resize_keyboard=True,
-                                      input_field_placeholder='Выбери категорию'))
+                                  reply_markup=cat_dct[(await state.get_data())['joke_level']]().as_markup(resize_keyboard=True,
+                                                                                                           input_field_placeholder='Выбери категорию'))
     log.info(f'add_joke_level is succes, set state add_joke_cat')
 
 
@@ -264,8 +272,7 @@ async def del_joke_send_inds(message: Message, state: FSMContext):
     await state.update_data(del_joke_cat=message.text)
     cat = (await state.get_data())['del_joke_cat']
 
-    await message.answer(cat,
-                         reply_markup=usual_cat_jokes_inds(cat).as_markup(input_field_placeholder='Выбери анекдот'))
+    await message.answer(cat, reply_markup=usual_cat_jokes_inds(cat).as_markup(input_field_placeholder='Выбери анекдот'))
     await state.set_state(Admin.del_joke_ind)
     log.info('sending keyboard with anecdots, set state del_joke_ind')
 
@@ -314,10 +321,10 @@ async def del_joke_filter(callback: CallbackQuery, state: FSMContext):
     elif callback.data == 'NO':
         cat = (await state.get_data())['del_joke_cat']
         await callback.message.answer(cat,
-                                      reply_markup=usual_cat_jokes_inds(cat).as_markup(
-                                          input_field_placeholder='Выбери анекдот'))
+                                      reply_markup=usual_cat_jokes_inds(cat).as_markup(input_field_placeholder='Выбери анекдот'))
         await state.set_state(Admin.del_joke_ind)
         log.info('sending keyboard with anecdots, set state del_joke3')
+
 
 
 #########################################################################################
@@ -328,7 +335,7 @@ async def del_joke_filter(callback: CallbackQuery, state: FSMContext):
 @rout_admin.callback_query(StateFilter(Admin.more_options), lambda x: x.data in ['add_admin', 'add_vip', 'contacts'])
 async def more_options(callback: CallbackQuery, state: FSMContext):
     options_dct = {'add_admin': Admin.add_admin_id,
-                   'add_vip': Admin.add_vip_id,
+                   'add_vip': Admin.add_vip_id ,
                    'contacts': Admin.contacts}
     if callback.data in ['add_admin', 'add_vip']:
         await callback.message.answer('отправь новый id')
@@ -382,14 +389,14 @@ async def add_vip_user(callback: CallbackQuery, state: FSMContext):
     if callback.data == "YES":
         new_vip_id = (await state.get_data())['new_vip_id']
         admin_ids.append(new_vip_id)
-        await callback.message.answer('новый вип добавлен',
-                                      reply_markup=admin_actions().as_markup(resize_keyboard=True))
+        await callback.message.answer('новый вип добавлен',  reply_markup=admin_actions().as_markup(resize_keyboard=True))
         await state.set_state(Admin.selection_state)
         log.info(f'add vip user succes, set selection_state')
     elif callback.data == 'NO':
         await callback.message.answer('отправь id')
         await state.set_state(Admin.add_vip_id)
         log.info('add vip user failed, set add vip id ')
+
 
 
 
