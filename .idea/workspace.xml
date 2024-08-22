@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="951dbafe-946f-4908-b608-8d80117fb44c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/container.py" beforeDir="false" afterPath="$PROJECT_DIR$/container.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routers/admin_panel.py" beforeDir="false" afterPath="$PROJECT_DIR$/routers/admin_panel.py" afterDir="false" />
-    </list>
+    <list default="true" id="951dbafe-946f-4908-b608-8d80117fb44c" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

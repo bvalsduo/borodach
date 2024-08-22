@@ -141,6 +141,7 @@ async def change_cat_new_name(message: Message, state: FSMContext):
     log.info(f'chng cat new name succes, set chng name')
 
 
+
 # change category state, change category name
 @rout_admin.message(StateFilter(Admin.chng_cat), lambda x: x.text.isalpha())
 async def change_cat_name(message: Message, state: FSMContext):
